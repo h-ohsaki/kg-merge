@@ -29,10 +29,10 @@ Microsoft Forms が書き出す回答ファイルの形式や LUNA が書き出�
 - Python 3
 - openpyxl (https://pypi.org/project/openpyxl/)
 
-## Windows 10 (x64) の場合
+## 実行ファイルを使用する場合
 
-Windows 10 (x64) 向けの実行ファイルを使用する場合は Python の実行環境等は不要
-です。
+Linux (x64) または Windows 10 (x64) 向けの実行ファイルを使用する場合は Python
+の実行環境等は不要です。
 
 # INSTALLATION
 
@@ -40,11 +40,14 @@ Windows 10 (x64) 向けの実行ファイルを使用する場合は Python の�
 pip3 install openpyxl
 ./kg-merge
 ```
-## Windows 10 (x64) の場合
+## Linux (x64) または Windows 10 (x64) の場合
 
-Windows 10 (x64) 用の実行ファイルを用意しました。PyInstaller で単一の実行ファ
-イルに変換したものです。以下の実行ファイルをダウンロードして、そのまま (エクス
-プローラでダブルクリックする等して) 実行してください。
+Linux (x64) および Windows 10 (x64) 用の実行ファイルを用意してあります。
+PyInstaller で単一の実行ファイルに変換したものです。以下の実行ファイルをダウン
+ロードして、そのまま (エクスプローラでダブルクリックする等して) 実行してくださ
+い。
+
+https://github.com/h-ohsaki/kg-merge/raw/master/linux-x64/kg-merge
 
 https://github.com/h-ohsaki/kg-merge/raw/master/win10-x64/kg-merge.exe
 
