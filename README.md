@@ -36,9 +36,9 @@ https://github.com/h-ohsaki/kg-merge/raw/master/win10-x64/kg-merge.exe
 # USAGE
 
 実行するとファイル選択ダイアログが開きますので、まず、LUNA からダウンロードし
-た名簿ファイル (meibo-*.xls) を選択してください。次に、再度ファイル選択ダイア
-ログが開きますので、Microsoft Forms からダウンロードした応答ファイル (*.xlsx)
-を選択してください。応答ファイルと同じディレクトリに *-merged.xlsx というファ
+た名簿ファイル (meibo-\*.xls) を選択してください。次に、再度ファイル選択ダイア
+ログが開きますので、Microsoft Forms からダウンロードした応答ファイル (\*.xlsx)
+を選択してください。応答ファイルと同じディレクトリに \*-merged.xlsx というファ
 イルが作成されます。
 
 # AVAILABILITY
