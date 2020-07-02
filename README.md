@@ -40,7 +40,7 @@ Linux (x64) または Windows 10 (x64) 向けの実行ファイルを使用す�
 pip3 install openpyxl
 ./kg-merge
 ```
-## Linux (x64) または Windows 10 (x64) の場合
+## Linux (x64) または Windows 10 (x64) で実行ファイルを使用する場合
 
 Linux (x64) および Windows 10 (x64) 用の実行ファイルを用意してあります。
 PyInstaller で単一の実行ファイルに変換したものです。以下の実行ファイルをダウン
