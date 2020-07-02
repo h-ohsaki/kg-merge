@@ -29,7 +29,7 @@ pip3 install openpyxl
 Windows 10 (x64) 用のバイナリを用意しました。PyInstaller で単一の実行ファイル
 に変換したものです。
 
-win10-x64/kg-merge.exe
+https://github.com/h-ohsaki/kg-merge/raw/master/win10-x64/kg-merge.exe
 
 # USAGE
 
