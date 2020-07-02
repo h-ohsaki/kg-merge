@@ -57,8 +57,7 @@ https://github.com/h-ohsaki/kg-merge/raw/master/win10-x64/kg-merge.exe
 2. 再度ファイル選択ダイアログが開きますので、Microsoft Forms からダウンロード
    した応答ファイル (\*.xlsx) を選択してください。
 
-3. 応答ファイルと同じディレクトリに \*-merged.xlsx というファイルが作成されま
-   す。
+応答ファイルと同じディレクトリに \*-merged.xlsx というファイルが作成されます。
 
 # AVAILABILITY
 
