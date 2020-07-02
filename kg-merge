@@ -5,6 +5,8 @@
 # All rights reserved.
 #
 
+# version 1.0
+
 import csv
 import tkinter
 import tkinter.filedialog
