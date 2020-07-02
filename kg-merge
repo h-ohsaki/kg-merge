@@ -15,6 +15,10 @@ import openpyxl
 
 
 def main():
+    # hide tkinter root window
+    root = tkinter.Tk()
+    root.withdraw()
+
     # load student list file downlaoded from Blackboard in TSV format
     student_list_file = tkinter.filedialog.askopenfilename(
         title="Select `meibo-*.xls' file downloaded from LUNA",
