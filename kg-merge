@@ -1,0 +1,65 @@
+#!/usr/bin/env python3
+#
+# Fill corresponding student codes in Microsoft Form response file.
+# Copyright (c) 2020, Hiroyuki Ohsaki.
+# All rights reserved.
+#
+
+import csv
+import tkinter
+import tkinter.filedialog
+import tkinter.messagebox
+import re
+
+import openpyxl
+
+
+def main():
+    # load student list file downlaoded from Blackboard in TSV format
+    student_list_file = tkinter.filedialog.askopenfilename(
+        title="Select `meibo-*.xls' file downloaded from LUNA",
+        filetypes=[('Student list file in TSV format', '.xls')])
+    student_code = {}
+    with open(student_list_file, newline='', encoding='sjis') as csvfile:
+        csvreader = csv.reader(csvfile, delimiter='\t')
+        for row in csvreader:
+            try:
+                # FIXME: avoid hardcoding
+                # 7: student ID (e.g., abc12345)
+                # 8: student code number (e.g., 27019876)
+                id_ = row[7]
+                student_code[id_] = row[8]
+            except IndexError:
+                pass
+
+    # open Microsoft Forms response file in XLSX format
+    response_file = tkinter.filedialog.askopenfilename(
+        title="Select Microsoft Forms response file in XLSX format",
+        filetypes=[('Microsoft Forms response file', '.xlsx')])
+    book = openpyxl.load_workbook(response_file)
+    # open the first sheet
+    sheet = list(book)[0]
+    # FIXME: avoid hardcoding
+    for cell in sheet['D']:
+        mail_addr = cell.value
+        m = re.match(r'(.+?)@nuc', mail_addr)
+        if m:
+            id_ = m.group(1)
+            try:
+                code = student_code[id_]
+            except KeyError:
+                code = 'NOT FOUND'
+            sheet.cell(row=cell.row, column=cell.column - 1, value=code)
+
+    # save modified Excel book
+    output_file = re.sub(r'\.xlsx$', '-merged.xlsx', response_file, flags=re.I)
+    if output_file != response_file:
+        book.save(output_file)
+        tkinter.messagebox.showinfo(
+            message=f'Successfully saved as {output_file}')
+    else:
+        raise
+
+
+if __name__ == "__main__":
+    main()
