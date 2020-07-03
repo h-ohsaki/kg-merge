@@ -5,67 +5,103 @@
 # All rights reserved.
 #
 
-# version 1.0
-
 import csv
+import re
+import sys
 import tkinter
 import tkinter.filedialog
 import tkinter.messagebox
-import re
 
 import openpyxl
+from perlcompat import die, warn, getopts
 
+# FIXME: avoid hardcoding
+BBOARD_ID_COLUMN = 7  # student ID (abc12345)
+BBOARD_CODE_COLUMN = 8  # student code (27019876)
+FORMS_ID_COLUMN = 4  # Microsoft ID (abc12345@nuc.kwansei.ac.jp)
+FORMS_FILL_COLUMN = 3
+
+def usage():
+    die(f"""\
+usage: {sys.argv[0]} [-v] [TSV-file] [XLSX-file]
+  -v    verbose mode
+""")
+
+def parse_student_list(file,
+                       id_column=BBOARD_ID_COLUMN,
+                       code_column=BBOARD_CODE_COLUMN):
+    """Open the student list file FILE downloaded from LUNA/Blackboard, and
+    return the dictionary whose key is a login ID and its value is the
+    corresponding student code."""
+
+    code = {}
+    with open(file, newline='', encoding='sjis') as csvfile:
+        # FIXME: automatically detect field separator
+        csvreader = csv.reader(csvfile, delimiter='\t')
+        for row in csvreader:
+            try:
+                id_ = row[id_column]
+                code[id_] = row[code_column]
+            except IndexError:
+                pass
+    return code
+
+def fill_codes(book, id_column, code, fill_column):
+    """For every row of the Excel book BOOK, search the ID_COLUMN-th column
+    for a valid Microsoft 365 ID, and fill the FILL_COLUMN-th column with the
+    corresponding student code.  Student codes are given by the dictionary
+    CODE."""
+    # use the first sheet
+    sheet = list(book)[0]
+    for col in sheet.iter_cols(min_col=id_column, max_col=id_column):
+        for cell in col:
+            m = re.match(r'(.+?)@nuc', cell.value)
+            if m:
+                id_ = m.group(1)
+                try:
+                    v = code[id_]
+                except KeyError:
+                    v = 'NOT FOUND'
+                sheet.cell(row=cell.row, column=fill_column, value=v)
+
+def save_book(book, path):
+    newpath = re.sub(r'\.xlsx$', '-merged.xlsx', path, flags=re.I)
+    if newpath != path:
+        book.save(newpath)
+        tkinter.messagebox.showinfo(
+            message=f"Successfully saved Excel book as `{newpath}'")
+    else:
+        tkinter.messagebox.showerror(
+            message=f"Failed to save Excel book as `{newpath}'")
 
 def main():
+    opt = getopts('v') or usage()
+    verbose = opt.v
+
     # hide tkinter root window
     root = tkinter.Tk()
     root.withdraw()
 
-    # load student list file downlaoded from Blackboard in TSV format
-    student_list_file = tkinter.filedialog.askopenfilename(
-        title="Select `meibo-*.xls' file downloaded from LUNA",
-        filetypes=[('Student list file in TSV format', '.xls')])
-    student_code = {}
-    with open(student_list_file, newline='', encoding='sjis') as csvfile:
-        csvreader = csv.reader(csvfile, delimiter='\t')
-        for row in csvreader:
-            try:
-                # FIXME: avoid hardcoding
-                # 7: student ID (e.g., abc12345)
-                # 8: student code number (e.g., 27019876)
-                id_ = row[7]
-                student_code[id_] = row[8]
-            except IndexError:
-                pass
+    try:
+        list_file = sys.argv[1]
+    except IndexError:
+        list_file = tkinter.filedialog.askopenfilename(
+            title=
+            'Select student list file (TSV format) downloaded from LUNA/Blackboard',
+            filetypes=[('TSV file', '.xls')])
 
-    # open Microsoft Forms response file in XLSX format
-    response_file = tkinter.filedialog.askopenfilename(
-        title="Select Microsoft Forms response file in XLSX format",
-        filetypes=[('Microsoft Forms response file', '.xlsx')])
+    try:
+        response_file = sys.argv[2]
+    except IndexError:
+        response_file = tkinter.filedialog.askopenfilename(
+            title='Select Microsoft Forms response file',
+            filetypes=[('Microsoft Excel file', '.xlsx')])
+
+    # extract student attributes (the mappting between login ID and student code)
+    code = parse_student_list(list_file)
     book = openpyxl.load_workbook(response_file)
-    # open the first sheet
-    sheet = list(book)[0]
-    # FIXME: avoid hardcoding
-    for cell in sheet['D']:
-        mail_addr = cell.value
-        m = re.match(r'(.+?)@nuc', mail_addr)
-        if m:
-            id_ = m.group(1)
-            try:
-                code = student_code[id_]
-            except KeyError:
-                code = 'NOT FOUND'
-            sheet.cell(row=cell.row, column=cell.column - 1, value=code)
-
-    # save modified Excel book
-    output_file = re.sub(r'\.xlsx$', '-merged.xlsx', response_file, flags=re.I)
-    if output_file != response_file:
-        book.save(output_file)
-        tkinter.messagebox.showinfo(
-            message=f'Successfully saved as {output_file}')
-    else:
-        raise
-
+    fill_codes(book, FORMS_ID_COLUMN, code, FORMS_FILL_COLUMN)
+    save_book(book, response_file)
 
 if __name__ == "__main__":
     main()
