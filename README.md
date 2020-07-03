@@ -51,6 +51,11 @@ https://github.com/h-ohsaki/kg-merge/raw/master/linux-x64/kg-merge
 
 https://github.com/h-ohsaki/kg-merge/raw/master/win10-x64/kg-merge.exe
 
+情報環境機構北島大助さんに macOS 用の実行ファイルを作っていただきました (実行
+ファイルを zip でアーカイブしたものです)。
+
+https://www.dropbox.com/s/rb4amu0an1q9yqv/kg-merge.zip?dl=0
+
 # USAGE
 
 実行するとファイル選択ダイアログが開きます。
